@@ -56,13 +56,13 @@ var config = {
             },
             {
                 test: /\.jsx$/,
-                loader: "react-hot!babel",
+                loaders: ["react-hot", "babel"],
                 exclude: [/node_modules/, /build/]
             },
             {
                 test: /\.css$/,
-                loader: "style!css!postcss",
-                exclude: [/node_modules/, /build/]
+                loaders: ["style", "css", "postcss"],
+                exclude: [/build/]
             },
             {
                 test: /\.styl$/,

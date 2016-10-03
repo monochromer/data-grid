@@ -1,3 +1,146 @@
 .DataGrid
+  position relative
   display flex
   flex-direction column
+  box-sizing border-box
+  width 100%
+  overflow hidden
+
+  &-Body
+    flex 1 1 0%
+    overflow auto
+    overflow-y scroll
+    height 100%
+    
+  &-Footer
+    flex 0 0 auto
+    padding 18px
+    border-top 1px solid #dcdcdc
+    
+  &-Toolbar
+    flex 0 0 auto
+    display flex
+    flex-wrap wrap
+    align-items flex-start
+    justify-content space-between
+    padding 18px
+    border-bottom 2px solid #dcdcdc
+      
+  &-DownloadPanel
+    .Button
+      margin 0 .25em
+
+.DataGrid-Search
+  position relative
+  flex 0 0 auto
+  overflow hidden
+  height 0
+  transition .4s
+
+  &-Inner
+    transform translateY(-100%)
+    padding-right 17px
+    border-bottom 2px solid #dcdcdc
+    overflow hidden
+    transition inherit
+    background-color #fff
+
+  &--Open
+    height 62px
+  
+  &--Open &-Inner
+    transform translateY(0%)
+    
+  & .DataTable-Cell
+    border-bottom 0
+    
+  & .TextInput
+    margin-left  0
+    margin-right 0
+
+.DataTable
+  width 100%
+  table-layout fixed
+  border-collapse separate
+  border-spacing 0
+  
+  &-Cell
+    vertical-align middle
+    box-sizing border-box
+    padding 12px 18px
+    height 60px
+    border-bottom 1px solid #dcdcdc
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+
+    &--Head
+      position relative
+      border-bottom-width: 2px;
+      text-align left
+      letter-spacing 1px
+      color #808080
+      transition .2s
+      cursor pointer
+      user-select none
+
+      &:hover
+        background-color #f0f9ff
+          
+  &-Head
+    background-color rgba(255, 255, 255, 0.9)
+
+  &-Body &-Row
+    transition .2s
+
+    &:hover
+      background-color #f0f9ff
+  
+  &-Title
+    position relative
+    padding-right 20px
+    
+.CellResizer
+  position absolute
+  top 0
+  bottom 0
+  right 0
+  opacity .5
+  width 4px
+  cursor col-resize
+  transition background .2s
+
+  &:hover
+    background-color #2997e0
+
+.CellInput
+  margin-left  -18px
+  margin-right -18px
+  padding-left  17px
+  padding-right 17px  
+  width 100%
+
+.DataTableWrap {
+  position relative
+  overflow hidden
+}
+
+.DataTableResizer {
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  width 4px
+  visibility hidden
+  opacity 0
+  pointer-events none
+  background-color #2997e0
+  transition opacity .2s
+}
+
+  .DataGrid--Resizing .DataTableResizer {
+    visibility visible
+    opacity .7
+  }
+
+

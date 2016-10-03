@@ -1,7 +1,8 @@
 :root
     height 100%
-    background #f7f6f5 
     font-family sans-serif
+    background #f7f6f5
+    color #333
 
 body
     margin 0
@@ -20,8 +21,42 @@ body
     min-height 720px
       
     &-Inner
+      overflow auto
       box-sizing border-box
       height 100%
+      display flex
       border 1px solid #dad6d6;
       box-shadow 0 0 5px #cecbcb; 
       background #fff
+        
+.TextInput
+  box-sizing border-box
+  max-width 100%;
+  height 32px
+  padding 0 .5em
+  border 1px solid #dcdcdc
+  border-radius 2px
+  transition: .2s;
+    
+  &:focus
+    border-color #4da9e6
+    outline 0
+    
+.Button
+  display inline-block
+  vertical-align middle
+  padding 8px 16px
+  border 1px solid #dcdcdc
+  border-radius 2px
+  background 0
+  color inherit
+  text-decoration none
+  cursor pointer
+  transition .2s
+
+  &:hover
+    background #f8f8f8
+
+  &:focus
+    border-color #4da9e6
+    outline 0
