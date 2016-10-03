@@ -10,11 +10,12 @@ var config = {
     context: path.join(__dirname, '/src'),
     entry: {
         bundle: './index.jsx'
+        // common: ['./common']
     },
     output: {
         path: __dirname + '/build/assets/',
         filename: '[name].js',
-        publicPath: 'build/'
+        publicPath: 'build/assets/'
     },
 
     resolve: {
@@ -36,7 +37,17 @@ var config = {
     devtool: NODE_ENV == 'development' ? "source-map" : null,
 
     plugins: [
+        // не дает перезаписать скрипты при наличии в них ошибок
         new webpack.NoErrorsPlugin(),
+        // находит общие зависимости библиотек и обобщает их
+        new webpack.optimize.DedupePlugin(),
+        // минимизирует id, которые используются webpack для подгрузки чанков и прочего
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        // выделение общего кода из точек входа
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+            minChunks: 2
+        }),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
             LANG: JSON.stringify('ru')
@@ -98,13 +109,19 @@ var config = {
 
 if (NODE_ENV == 'production') {
   config.plugins.push(
-      new webpack.optimize.UglifyJsPlugin({
+    new webpack.optimize.UglifyJsPlugin({
+        beautify: false,
+        comments: false,
         compress: {
-          warnings: false,
-          drop_console: true,
-          unsafe: true
+            sequences : true,
+            booleans : true,
+            loops : true,
+            unused : true,
+            warnings : false,
+            drop_console: true,
+            unsafe : true
         }
-      })
+    })
   );
 }
 
