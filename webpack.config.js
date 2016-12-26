@@ -9,13 +9,13 @@ const NODE_ENV = (process.env.NODE_ENV || 'development').trim();
 var config = {
     context: path.join(__dirname, '/src'),
     entry: {
-        bundle: './index.jsx'
-        // common: ['./common']
+        bundle: './index.jsx',
+        common: './common.js'
     },
     output: {
         path: __dirname + '/build/assets/',
         filename: '[name].js',
-        publicPath: 'build/assets/'
+        publicPath: '/assets'
     },
 
     resolve: {
@@ -23,12 +23,6 @@ var config = {
         modulesDirectories: ['node_modules'],
         extensions:         ['', '.js', '.jsx', '.tsx', '.csx', '.coffee']
     },
-
-    // resolveLoader: {
-    //     modulesDirectories: ['node_modules'],
-    //     moduleTemplates:    ['*-loader', '*'],
-    //     extensions:         ['', '.js']
-    // },
 
     watch: NODE_ENV == 'development',
     watchOptions: {
@@ -97,9 +91,6 @@ var config = {
     },
 
     devServer: {
-        // proxy: {
-        //     '*': 'http://localhost:3000'
-        // },
         host: 'localhost',
         port: '9000',
         contentBase: __dirname + '/build',

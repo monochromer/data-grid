@@ -4,6 +4,9 @@ import classNames from 'classnames';
 import './datagrid.styl';
 
 
+const getBox = Element.prototype.getBoundingClientRect;
+
+
 const DataGrid = React.createClass({  
     propTypes: {
       headers: React.PropTypes.arrayOf(React.PropTypes.string),
@@ -142,29 +145,37 @@ const DataGrid = React.createClass({
       ev.target.download = 'data.' + format;
     },
     
-    // startResizing(e) {
-    //   this.setState({
-    //     resizing: {
-    //       x: e.target.pageX
-    //     }
-    //   });
-    //   document.addEventListener('mousemove', this.dragResizerHandler);
-    // },
-    // 
-    // stopResizing() {
-    //   this.setState({
-    //     resizing: null
-    //   });
-    //   document.removeEventListener('mousemove', this.dragResizerHandler);
-    // },
-    // 
-    // dragResizerHandler(e) {
-    //   this.setState({
-    //     resizing: {
-    //       x: e.target.pageX
-    //     }
-    //   });
-    // },
+    startResizing(e) {
+      this.setState({
+        resizing: {
+          tableLeftX: getBox.call(this.tableWrapper).left,
+          startX: e.target.clientX
+        }
+      });
+      console.log(this.state.resizing);
+      document.addEventListener('mousemove', this.dragResizerHandler);
+      document.addEventListener('mouseup', this.cancelResizerHandler);
+    },
+    
+    stopResizing() {
+      document.removeEventListener('mousemove', this.dragResizerHandler);
+      document.removeEventListener('mousemove', this.cancelResizerHandler);
+    },
+    
+    dragResizerHandler(e) {
+      this.setState({
+        resizing: {
+          moveX: e.target.pageX
+        }
+      });
+    },
+    
+    cancelResizeHandler(e) {
+      this.setState({
+        resizing: false
+      });
+      document.removeEventListener('mousemove', this.dragResizerHandler);
+    },
     
     render() {
         var self = this;
@@ -177,7 +188,7 @@ const DataGrid = React.createClass({
           return (
             <th key={index} className="DataTable-Cell DataTable-Cell--Head">
               {content}
-              <div className="CellResizer" onMouseDown={self.startResizing} onMouseUp={self.stopResizing}></div>
+              <div className="CellResizer" onClick={self.startResizing}></div>
             </th>
           )
         });
@@ -204,7 +215,7 @@ const DataGrid = React.createClass({
         })
 
         return (
-            <div className="DataGrid" className={classNames("DataGrid", {"DataGrid--Resizing": self.state.resizing})}>
+            <div className="DataGrid" className={classNames("DataGrid", {"DataGrid--Resizing": !!self.state.resizing})}>
               <div className="DataGrid-Toolbar">
                 <button className="Button" type="button" onClick={self.toggleSearch}>Search</button>
                 
@@ -249,7 +260,7 @@ const DataGrid = React.createClass({
                     </tbody> 
                   </table>
                   
-                  <div className="DataTableResizer" style={{transform: 'translateX(${self.resizing.x}px)'}}></div>
+                  <div className="DataTableResizer" ref={(c) => self.DataTableResizer = c} style={{transform: 'translateX(${self.resizing.moveX - self.resizing.startX}px)'}}></div>
                 </div>
               </div>
               
