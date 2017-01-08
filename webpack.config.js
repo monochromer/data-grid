@@ -19,7 +19,10 @@ var config = {
     },
 
     resolve: {
-        root: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'node_modules')],
+        root: [
+            path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, 'node_modules')
+        ],
         modulesDirectories: ['node_modules'],
         extensions:         ['', '.js', '.jsx', '.tsx', '.csx', '.coffee']
     },
