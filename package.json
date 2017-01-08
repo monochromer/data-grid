@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "prod": "SET \"NODE_ENV=production\" && webpack",
-    "dev": "SET \"NODE_ENV=development\" && webpack-dev-server --inline --hot --colors"
+    "dev": "SET \"NODE_ENV=development\" && webpack-dev-server --inline --hot --colors",
+    "dev-build": "SET \"NODE_ENV=development\" && webpack"
   },
   "dependencies": {
     "babel-runtime": "^6.11.6",

@@ -96,7 +96,7 @@ const DataGrid = React.createClass({
       }
     },
     
-    search: function(e) {
+    search(e) {
       var needle = e.target.value.toLowerCase();
       
       if (!needle) {
