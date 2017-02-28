@@ -202,7 +202,7 @@ const DataGrid = React.createClass({
                   var edit = self.state.edit;
                   if (edit && edit.row === rowIndex && edit.cell === cellIndex) {
                     content = (
-                      <form onSubmit={self.save}>
+                      <form className="DataTable-Form" onSubmit={self.save}>
                         <input className="TextInput CellInput" type="text" defaultValue={content} autoFocus /> 
                       </form>
                     );
