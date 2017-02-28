@@ -9,7 +9,7 @@ const getBox = Element.prototype.getBoundingClientRect;
 
 const DataGrid = React.createClass({  
     propTypes: {
-      headers: React.PropTypes.arrayOf(React.PropTypes.string),
+      columnModel: React.PropTypes.arrayOf(React.PropTypes.object),
       initialData: React.PropTypes.arrayOf(
         React.PropTypes.arrayOf(React.PropTypes.string)
       ),
@@ -39,7 +39,7 @@ const DataGrid = React.createClass({
     
     scrollHandler() {
       var scrollTop = this.tableWrapper.scrollTop;
-      this.tableHead.style.transform = `translateY(${scrollTop}px)`;
+      this.tableHead.style.transform = `translate3d(0, ${scrollTop}px, 0)`;
     },
     
     sortData(e) {
