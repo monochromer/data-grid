@@ -3,8 +3,8 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-
 const NODE_ENV = (process.env.NODE_ENV || 'development').trim();
+const isProduction = NODE_ENV === 'production';
 
 var config = {
     context: path.join(__dirname, '/src/'),
@@ -34,7 +34,7 @@ var config = {
         aggregateTimeout: 150
     },
 
-    devtool: NODE_ENV === 'development' ? 'cheap-module-eval-source-map' : false,
+    devtool: isProduction ? false : 'cheap-module-eval-source-map',
 
     plugins: [
         // не дает перезаписать скрипты при наличии в них ошибок
@@ -56,13 +56,13 @@ var config = {
         }),
 
         new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(NODE_ENV),
-            LANG: JSON.stringify('ru')
+            'NODE_ENV': JSON.stringify(NODE_ENV),
+            'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
         }),
 
         new ExtractTextPlugin({
           filename: 'styles.css',
-          // disable: NODE_ENV === 'development',
+          disable: isProduction,
           allChunks: true
         })
     ],
@@ -82,18 +82,24 @@ var config = {
             {
                 test: /\.css$/,
                 exclude: [/build/],
-                use: ExtractTextPlugin.extract({
-                  fallback: 'style-loader',
-                  use: ['css-loader', 'postcss-loader']
-                })
+                use: 
+                    !isProduction
+                        ? ['style-loader', 'css-loader', 'postcss-loader']
+                        : ExtractTextPlugin.extract({
+                            fallback: 'style-loader',
+                            use: ['css-loader', 'postcss-loader']
+                        })
             },
             {
                 test: /\.styl$/,
-                use: ExtractTextPlugin.extract({
-                  fallback: 'style-loader',
-                  use: ['css-loader', 'postcss-loader', 'stylus-loader']
-                }),
-                exclude: [/node_modules/, /build/]
+                exclude: [/node_modules/, /build/],
+                use: 
+                    !isProduction
+                        ? ['style-loader', 'css-loader', 'postcss-loader', 'stylus-loader']
+                        : ExtractTextPlugin.extract({
+                            fallback: 'style-loader',
+                            use: ['css-loader', 'postcss-loader', 'stylus-loader']
+                        })
             },
             {
                 test: /\.(png|jpg|jpeg|svg|ttf|eot|woff|woff2)$/,
