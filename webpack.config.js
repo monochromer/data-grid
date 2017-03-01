@@ -20,8 +20,8 @@ var config = {
 
     resolve: {
         modules: [
-          'node_modules',
           path.join(__dirname, '/src/'),
+          'node_modules'
         ],
         extensions: ['.js', '.jsx', '.tsx', '.csx', '.coffee']
     },
@@ -56,13 +56,15 @@ var config = {
         }),
 
         new webpack.DefinePlugin({
-            'NODE_ENV': JSON.stringify(NODE_ENV),
-            'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
+            NODE_ENV: JSON.stringify(NODE_ENV),
+            'process.env': {
+                NODE_ENV: JSON.stringify(NODE_ENV)
+            }
         }),
 
         new ExtractTextPlugin({
           filename: 'styles.css',
-          disable: isProduction,
+          disable: !isProduction,
           allChunks: true
         })
     ],

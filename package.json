@@ -2,9 +2,9 @@
   "name": "react-grid",
   "version": "0.0.1",
   "scripts": {
-    "prod": "cross-env NODE_ENV=production webpack --colors",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --watch --inline --colors",
-    "dev-build": "cross-env NODE_ENV=development webpack --colors"
+    "build": "cross-env NODE_ENV=production webpack --colors",
+    "dev-build": "cross-env NODE_ENV=development webpack --colors",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hot --watch --inline --colors"
   },
   "dependencies": {
     "babel-polyfill": "^6.23.0",
