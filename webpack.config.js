@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const NODE_ENV = (process.env.NODE_ENV || 'development').trim();
 const isProduction = NODE_ENV === 'production';
@@ -10,12 +11,12 @@ var config = {
     context: path.join(__dirname, '/src/'),
     entry: {
         bundle: './index.jsx'
-        // common: './common.js'
     },
     output: {
-        filename: '[name].js',
+        filename: '[name].[hash].js',
         path: path.join(__dirname, '/build/assets/'),
-        publicPath: process.env.ASSET_PATH || '/assets/'
+        // publicPath: process.env.ASSET_PATH || '/assets/'
+        publicPath: '/'
     },
 
     resolve: {
@@ -29,7 +30,7 @@ var config = {
       modules: ['node_modules']
     },
 
-    // watch: NODE_ENV === 'development',
+    watch: !isProduction,
     watchOptions: {
         aggregateTimeout: 150
     },
@@ -51,8 +52,13 @@ var config = {
 
         // выделение общего кода из точек входа
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'common',
-            minChunks: 2
+            name: 'vendor',
+            // filename: 'vendor-[hash].js',
+            // minChunks: 2,
+            minChunks: function (module) {
+                // this assumes your vendor imports exist in the node_modules directory
+                return module.context && module.context.indexOf('node_modules') !== -1;
+            },
         }),
 
         new webpack.DefinePlugin({
@@ -66,6 +72,11 @@ var config = {
           filename: 'styles.css',
           disable: !isProduction,
           allChunks: true
+        }),
+
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: 'index.html',
         })
     ],
 
