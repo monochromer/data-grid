@@ -39,13 +39,7 @@ var config = {
 
     plugins: [
         // не дает перезаписать скрипты при наличии в них ошибок
-        //  Using NoErrorsPlugin is deprecated. Use NoEmitOnErrorsPlugin instead.
-        // new webpack.NoErrorsPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-
-        // находит общие зависимости библиотек и обобщает их
-        // This plugin was removed from webpack. remove it from configuration.
-        // new webpack.optimize.DedupePlugin(),
 
         // минимизирует id, которые используются webpack для подгрузки чанков и прочего
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -54,9 +48,7 @@ var config = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             // filename: 'vendor-[hash].js',
-            // minChunks: 2,
             minChunks: function (module) {
-                // this assumes your vendor imports exist in the node_modules directory
                 return module.context && module.context.indexOf('node_modules') !== -1;
             },
         }),
@@ -76,7 +68,7 @@ var config = {
 
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'index.html',
+            template: 'index.html'
         })
     ],
 
