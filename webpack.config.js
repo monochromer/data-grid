@@ -14,9 +14,9 @@ var config = {
     },
     output: {
         filename: '[name].[hash].js',
-        path: path.join(__dirname, '/build/assets/'),
+        path: path.join(__dirname, '/build/'),
         // publicPath: process.env.ASSET_PATH || '/assets/'
-        publicPath: '/'
+        // publicPath: '/'
     },
 
     resolve: {
@@ -116,10 +116,10 @@ var config = {
     devServer: {
         host: 'localhost',
         port: '9000',
-        contentBase: [
-            path.join(__dirname, '/build/'),
-            path.join(__dirname, '/build/assets/')
-        ],
+        // contentBase: [
+        //     path.join(__dirname, '/build/'),
+        //     // path.join(__dirname, '/build/assets/')
+        // ],
         hot: true,
         historyApiFallback: true
     }
