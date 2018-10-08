@@ -7,14 +7,14 @@ import './datagrid.styl';
 const getBox = Element.prototype.getBoundingClientRect;
 
 
-const DataGrid = React.createClass({  
+const DataGrid = React.createClass({
     propTypes: {
       columnModel: React.PropTypes.arrayOf(React.PropTypes.object),
       initialData: React.PropTypes.arrayOf(
         React.PropTypes.arrayOf(React.PropTypes.string)
       ),
     },
-    
+
     getInitialState() {
       return {
         columnModel: this.props.columnModel,
@@ -26,33 +26,33 @@ const DataGrid = React.createClass({
         resizing: null
       }
     },
-    
+
     _preSearchData: null,
-    
+
     componentDidMount() {
       this.tableWrapper.addEventListener('scroll', this.scrollHandler);
     },
-    
+
     componentWillUnmount() {
       this.tableWrapper.removeEventListener('scroll', this.scrollHandler);
     },
-    
+
     scrollHandler() {
       var scrollTop = this.tableWrapper.scrollTop;
       this.tableHead.style.transform = `translate3d(0, ${scrollTop}px, 0)`;
     },
-    
+
     sortData(e) {
       var column = e.target.cellIndex;
       var descending = this.state.sortby === column && !this.state.descending;
       var data = this.state.data.slice();
-      
+
       data.sort(function(a, b) {
         return descending
           ? a[column] < b[column]
           : a[column] > b[column];
       });
-      
+
       this.setState({
         data: data,
         sortby: column,
@@ -69,7 +69,7 @@ const DataGrid = React.createClass({
         }
       });
     },
-    
+
     save(e) {
       e.preventDefault();
       var input = e.target.firstChild;
@@ -95,15 +95,15 @@ const DataGrid = React.createClass({
           });
       }
     },
-    
+
     search(e) {
       var needle = e.target.value.toLowerCase();
-      
+
       if (!needle) {
         this.setState({ data: this._preSearchData });
         return;
       }
-      
+
       var idx = e.target.dataset.idx;
       var searchdata = this._preSearchData.filter(function (row) {
         return row[idx].toString().toLowerCase().indexOf(needle) > -1;
@@ -111,19 +111,22 @@ const DataGrid = React.createClass({
 
       this.setState({ data: searchdata });
     },
-    
+
     renderColumnModel() {
       return (
         <colgroup>
         {
           this.state.columnModel.map(function(item, index) {
-            return <col key={index} style={{width: item.width}} />
+            return <col
+              key={index}
+              style={{ width: item.width }}
+            />
           })
         }
         </colgroup>
       )
     },
-    
+
     download(format, ev) {
       var contents = format === 'json'
         ? JSON.stringify(this.state.data)
@@ -144,39 +147,63 @@ const DataGrid = React.createClass({
       ev.target.href = URL.createObjectURL(blob);
       ev.target.download = 'data.' + format;
     },
-    
-    startResizing(e) {
-      this.setState({
-        resizing: {
-          tableLeftX: getBox.call(this.tableWrapper).left,
-          startX: e.target.clientX
-        }
-      });
-      console.log(this.state.resizing);
-      document.addEventListener('mousemove', this.dragResizerHandler);
-      document.addEventListener('mouseup', this.cancelResizerHandler);
+
+    startResizing(index) {
+      var self = this;
+      return function(e) {
+        const clientX = e.clientX;
+        e.preventDefault();
+        e.stopPropagation();
+        self.setState({
+          resizing: {
+            index,
+            // tableLeftX: getBox.call(self.tableWrapper).left,
+            startX: clientX
+          }
+        });
+        setTimeout(() => {
+          console.log(self.state)
+        }, 500);
+        document.addEventListener('mousemove', self.dragResizerHandler);
+        document.addEventListener('mouseup', self.cancelResizerHandler);
+      }
     },
-    
-    stopResizing() {
-      document.removeEventListener('mousemove', this.dragResizerHandler);
-      document.removeEventListener('mousemove', this.cancelResizerHandler);
-    },
-    
+
     dragResizerHandler(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!this.state.resizing) return;
+      const { clientX: moveX } = e;
+      const { columnModel } = this.state;
+      const { startX, index: resizingIndex } = this.state.resizing;
+      const newColumnModel = columnModel.map((column, index) => {
+        return {
+          ...column,
+          ...(resizingIndex === index
+              ? { width: (column.width + (moveX - startX)) }
+              : { width: column.width }
+            )
+        }
+      });
       this.setState({
+        columnModel: newColumnModel,
         resizing: {
-          moveX: e.target.pageX
+          moveX,
+          startX: moveX,
+          index: resizingIndex
         }
       });
     },
-    
-    cancelResizeHandler(e) {
+
+    cancelResizerHandler(e) {
+      console.log(e, this);
       this.setState({
-        resizing: false
+        resizing: null
       });
       document.removeEventListener('mousemove', this.dragResizerHandler);
+      document.removeEventListener('mouseup', this.cancelResizerHandler);
     },
-    
+
     render() {
         var self = this;
 
@@ -188,11 +215,11 @@ const DataGrid = React.createClass({
           return (
             <th key={index} className="DataTable-Cell DataTable-Cell--Head">
               {content}
-              <div className="CellResizer" onClick={self.startResizing}></div>
+              <div className="CellResizer" onMouseDown={self.startResizing(index)}></div>
             </th>
           )
         });
-        
+
         var rows = this.state.data.map(function(row, rowIndex) {
           return (
             <tr key={rowIndex} className="DataTable-Row">
@@ -203,7 +230,7 @@ const DataGrid = React.createClass({
                   if (edit && edit.row === rowIndex && edit.cell === cellIndex) {
                     content = (
                       <form className="DataTable-Form" onSubmit={self.save}>
-                        <input className="TextInput CellInput" type="text" defaultValue={content} autoFocus /> 
+                        <input className="TextInput CellInput" type="text" defaultValue={content} autoFocus />
                       </form>
                     );
                   }
@@ -218,13 +245,13 @@ const DataGrid = React.createClass({
             <div className="DataGrid" className={classNames("DataGrid", {"DataGrid--Resizing": !!self.state.resizing})}>
               <div className="DataGrid-Toolbar">
                 <button className="Button" type="button" onClick={self.toggleSearch}>Search</button>
-                
+
                 <div className="DataGrid-DownloadPanel">
                   <a className="Button" href="data.json" onClick={self.download.bind(this, 'json')}>Export JSON</a>
                   <a className="Button" href="data.csv" onClick={self.download.bind(this, 'csv')}>Export CSV</a>
                 </div>
               </div>
-              
+
               <div className={ classNames('DataGrid-Search', {'DataGrid-Search--Open': self.state.search}) }>
                 <div className="DataGrid-Search-Inner">
                   <table className="DataTable">
@@ -241,11 +268,11 @@ const DataGrid = React.createClass({
                           })
                         }
                       </tr>
-                    </thead> 
-                  </table> 
+                    </thead>
+                  </table>
                 </div>
               </div>
-              
+
               <div className="DataGrid-Body" ref={(c) => self.tableWrapper = c}>
                 <div className="DataTableWrap">
                   <table className="DataTable">
@@ -257,13 +284,13 @@ const DataGrid = React.createClass({
                     </thead>
                     <tbody className="DataTable-Body" onDoubleClick={self.showEditor}>
                       { rows }
-                    </tbody> 
+                    </tbody>
                   </table>
-                  
+
                   <div className="DataTableResizer" ref={(c) => self.DataTableResizer = c} style={{transform: 'translateX(${self.resizing.moveX - self.resizing.startX}px)'}}></div>
                 </div>
               </div>
-              
+
               <div className="DataGrid-Footer">
                 <span>Books Count: <b>{this.state.data.length}</b></span>
               </div>

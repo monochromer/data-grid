@@ -8,11 +8,11 @@ import './common.styl';
 
 var db = {
   "columnModel": [
-    { title: "Book",      "field": "Book",      width: '340px' },
-    { title: "Author",    "field": "Author",    width: '200px' },
-    { title: "Language",  "field": "Language",  width: '160px' },
-    { title: "Published", "field": "Published", width: '160px' },
-    { title: "Sales",     "field": "Sales",     width: '160px' }
+    { title: "Book",      "field": "Book",      width: 340 },
+    { title: "Author",    "field": "Author",    width: 200 },
+    { title: "Language",  "field": "Language",  width: 160 },
+    { title: "Published", "field": "Published", width: 160 },
+    { title: "Sales",     "field": "Sales",     width: 160 }
   ],
   "data": [
     [
@@ -64,7 +64,7 @@ var db = {
       "1887",
       "100 million"
     ],
-    
+
     [ "Book Title", "Author", "Language", "Year", "sales"],
     [ "Book Title", "Author", "Language", "Year", "sales"],
     [ "Book Title", "Author", "Language", "Year", "sales"],
